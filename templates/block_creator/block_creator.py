@@ -151,6 +151,14 @@ class BlockCreator(TemplateBase):
             return
         except StateCheckError:
             pass
+        import time
+        start = time.time()
+        while time.time() - start < 1800:
+            cmd = self._container_sal.client.system("/tfchainc").get()
+            if cmd.state == 'ERROR':
+                time.sleep(5)
+            else:
+                break
         self._client_sal.wallet_unlock()
         self.state.set('wallet', 'unlock', 'ok')
 
